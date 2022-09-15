@@ -4,6 +4,7 @@ public class UserRegistration {
     private String fullName;
     private String userEmail;
     private String userRole;
+    private Integer userID;
 
     public void setUserName(String userName) {
         this.userName = userName;
@@ -20,6 +21,9 @@ public class UserRegistration {
     public void setUserRole (String userRole) {
         this.userRole = userRole;
     }
+    public void userID (Integer userID) {
+        this.userID = userID;
+    }
     public String getUserName() {
         return userName;
     }
@@ -35,5 +39,9 @@ public class UserRegistration {
     public String getUserRole(){
         return userRole;
     }
+    public Integer getUserID() {
+        return userID;
+    }
+
 
 }

@@ -74,5 +74,49 @@ public class DBConnection {
         }
         return 0;
     }
+    public int readListDesk() {
+        try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
+            String listDesk = "SELECT * FROM workplaces WHERE occupied ='Y'";
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(listDesk);
+
+            while (resultSet.next()) {
+                String wplaceID = resultSet.getString(1);
+                Integer floor = resultSet.getInt(2);
+                Integer room = resultSet.getInt(3);
+                String listOutput = "Workplace: " + wplaceID +" Floor: "+floor+" Room: "+room;
+                System.out.println(listOutput);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int BookDesk(String wplaceID, String occupied, String dateFrom, String dateTo, int userID ) {
+        try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
+            String bkDesk = "UPDATE workplaces\tSET dateFrom = '?', dateTo = '?', occupied = 'Y', userID = ? WHERE wplaceID = ?;";
+
+            PreparedStatement statement = conn.prepareStatement(bkDesk);
+            statement.setString(1, wplaceID);
+            statement.setString(6, dateFrom);
+            statement.setString(7, dateTo);
+            statement.setInt(8, userID);
+
+            int rowsInserted = statement.executeUpdate();
+            if(rowsInserted > 0){
+                System.out.println("Congratulations! Your booking is confirmed");
+            } else {
+                System.out.println("Ups! Try again...Please check spelling");
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
 
 }
