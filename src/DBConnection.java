@@ -96,13 +96,15 @@ public class DBConnection {
 
     public int saveBookingDesk(BookingDesk newBooking) {
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
-            String bkDesk = "UPDATE workplaces\tSET dateFrom = '?', dateTo = '?', occupied = 'Y', userID = ? WHERE wplaceID = ?;";
+            String bkDesk = "UPDATE workplaces\tSET occupied = ?, dateFrom = ?, dateTo = ?, userID = ? WHERE wplaceID = ?";
 
             PreparedStatement statement = conn.prepareStatement(bkDesk);
-            statement.setString(1, newBooking.getWplaceID());
-            statement.setString(6, dateFrom);
-            statement.setString(7, dateTo);
-            statement.setInt(8, userID);
+            statement.setString(1, newBooking.getOccupied());
+            statement.setString(2, newBooking.getDateFrom());
+            statement.setString(3, newBooking.getDateTo());
+            statement.setInt(4, newBooking.getUserID());
+            statement.setString(5, newBooking.getWplaceID());
+
 
             int rowsInserted = statement.executeUpdate();
             if(rowsInserted > 0){

@@ -3,16 +3,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.lang.Integer.parseInt;
-
 public class Main {
     //variable for checking current user
     static public int currentUserId = 0;
-    //static String topic;
     static char runAgain = 'y';
-
-
-    //DataBase Class
     static DBConnection dataBase = new DBConnection();
     static Scanner scanner = new Scanner(System.in);
 
@@ -180,55 +174,25 @@ public class Main {
         while (!myMatcher.matches()) {
             System.out.println(warnMessage);
             inputValue = scanner.nextLine();
-            myPattern.matcher(inputValue);
+            myPattern = Pattern.compile(pattern);
+            myMatcher = myPattern.matcher(inputValue);
         }
         return inputValue;
     }
     public static void bookDesk () {
         BookingDesk newBooking = new BookingDesk();
 
-//        System.out.println("Please enter Workplace ID");
-//        newBooking.setWplaceID(scanner.nextLine());
-
-//        Pattern pattern = Pattern.compile("\\d{6}");
-//        Matcher matcher = pattern.matcher(newBooking.getWplaceID());
-//        while (!matcher.matches()) {
-//            System.out.println("Please check Workplace ID! It should be 6 digits");
-//            newBooking.setWplaceID(scanner.nextLine());
-//            pattern = Pattern.compile("\\d{6}");
-//            matcher = pattern.matcher(newBooking.getWplaceID());
-//        }
-
         newBooking.setWplaceID(getMatchedPattern("Please enter Workplace ID","Please check Workplace ID! It should be 6 digits","\\d{6}"));
+
         newBooking.setOccupied("Y");
 
-        System.out.println("Please enter Date From: YYYYMMDD");
-        newBooking.setDateFrom(scanner.nextLine());
+        newBooking.setDateFrom(getMatchedPattern("Please enter Date From: YYYYMMDD", "Please check DateFrom! It should be in YYYYMMDD format", "\\d{8}"));
 
-        Pattern pattern1 = Pattern.compile("\\d{8}");
-        Matcher matcher1 = pattern1.matcher(newBooking.getDateFrom());
-        while (!matcher1.matches()) {
-            System.out.println("Please check DateFrom! It should be in YYYYMMDD format");
-            newBooking.setDateFrom(scanner.nextLine());
-            pattern1 = Pattern.compile("\\d{8}");
-            matcher1 = pattern1.matcher(newBooking.getDateFrom());
-        }
+        newBooking.setDateTo(getMatchedPattern("Please enter Date To: YYYYMMDD", "Please check DateTo! It should be in YYYYMMDD format","\\d{8}"));
 
-        System.out.println("Please enter Date To: YYYYMMDD");
-        newBooking.setDateTo(scanner.nextLine());
+        newBooking.setUserID(7); //(dataBase.checkUser(UserRegistration.getUserID()));  //TO TEST CAREFULLY!!!
+        dataBase.saveBookingDesk(newBooking);
 
-        Pattern pattern2 = Pattern.compile("\\d{8}");
-        Matcher matcher2 = pattern2.matcher(newBooking.getDateTo());
-        while (!matcher2.matches()) {
-            System.out.println("Please check To! It should be in YYYYMMDD format");
-            newBooking.setDateTo(scanner.nextLine());
-            pattern2 = Pattern.compile("\\d{8}");
-            matcher2 = pattern2.matcher(newBooking.getDateTo());
-        }
-
-        newBooking.setUserID(7); //(dataBase.checkUser(userID.getUserID()));  //TO TEST CAREFULLY!!!*/
-// Save as Nellija asked  into DataBase
-//        dataBase.saveBookingDesk(newBooking);
         //THANK YOU MESSAGE
     }
 
