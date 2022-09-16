@@ -3,6 +3,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 public class Main {
     //variable for checking current user
     static public int currentUserId = 0;
@@ -166,21 +168,38 @@ public class Main {
         dataBase.readListDesk();
     }
 
+    private static String getMatchedPattern(String inputMessage, String warnMessage, String pattern) {
+        String inputValue;
+        System.out.println(inputMessage);
+
+        inputValue = scanner.nextLine();
+
+        Pattern myPattern = Pattern.compile(pattern);
+        Matcher myMatcher = myPattern.matcher(inputValue);
+
+        while (!myMatcher.matches()) {
+            System.out.println(warnMessage);
+            inputValue = scanner.nextLine();
+            myPattern.matcher(inputValue);
+        }
+        return inputValue;
+    }
     public static void bookDesk () {
         BookingDesk newBooking = new BookingDesk();
 
-        System.out.println("Please enter Workplace ID");
-        newBooking.setWplaceID(scanner.nextLine());
+//        System.out.println("Please enter Workplace ID");
+//        newBooking.setWplaceID(scanner.nextLine());
 
-        Pattern pattern = Pattern.compile("\\d{6}");
-        Matcher matcher = pattern.matcher(newBooking.getWplaceID());
-        while (!matcher.matches()) {
-            System.out.println("Please check Workplace ID! It should be 6 digits");
-            newBooking.setWplaceID(scanner.nextLine()); //NO NEED TO SET, NEED TO LOOKUP!
-            pattern = Pattern.compile("\\d{6}");
-            matcher = pattern.matcher(newBooking.getWplaceID());
-        }
+//        Pattern pattern = Pattern.compile("\\d{6}");
+//        Matcher matcher = pattern.matcher(newBooking.getWplaceID());
+//        while (!matcher.matches()) {
+//            System.out.println("Please check Workplace ID! It should be 6 digits");
+//            newBooking.setWplaceID(scanner.nextLine());
+//            pattern = Pattern.compile("\\d{6}");
+//            matcher = pattern.matcher(newBooking.getWplaceID());
+//        }
 
+        newBooking.setWplaceID(getMatchedPattern("Please enter Workplace ID","Please check Workplace ID! It should be 6 digits","\\d{6}"));
         newBooking.setOccupied("Y");
 
         System.out.println("Please enter Date From: YYYYMMDD");
@@ -207,9 +226,9 @@ public class Main {
             matcher2 = pattern2.matcher(newBooking.getDateTo());
         }
 
-        //BookingDesk userID = new BookingDesk();
         newBooking.setUserID(7); //(dataBase.checkUser(userID.getUserID()));  //TO TEST CAREFULLY!!!*/
-
+// Save as Nellija asked  into DataBase
+//        dataBase.saveBookingDesk(newBooking);
         //THANK YOU MESSAGE
     }
 

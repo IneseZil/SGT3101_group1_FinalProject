@@ -94,12 +94,12 @@ public class DBConnection {
         return 0;
     }
 
-    public int BookDesk(String wplaceID, String occupied, String dateFrom, String dateTo, int userID ) {
+    public int saveBookingDesk(BookingDesk newBooking) {
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
             String bkDesk = "UPDATE workplaces\tSET dateFrom = '?', dateTo = '?', occupied = 'Y', userID = ? WHERE wplaceID = ?;";
 
             PreparedStatement statement = conn.prepareStatement(bkDesk);
-            statement.setString(1, wplaceID);
+            statement.setString(1, newBooking.getWplaceID());
             statement.setString(6, dateFrom);
             statement.setString(7, dateTo);
             statement.setInt(8, userID);
@@ -113,6 +113,7 @@ public class DBConnection {
         }
         catch (SQLException e) {
             e.printStackTrace();
+            return 1;
         }
         return 0;
     }
