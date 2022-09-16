@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 public class Main {
     static public int currentUserId = 0;
+    static public String currentUserRole;
     static char runAgain = 'y';
     static DBConnection dataBase = new DBConnection();
     static Scanner scanner = new Scanner(System.in);
@@ -18,8 +19,6 @@ public class Main {
             System.out.println("c - create an account");
             char action = scanner.nextLine().charAt(0);
 
-            String currentUserRole;
-            currentUserRole = currentUser.getUserRole();
 
             if (action == 'l') {
                 login();
@@ -34,7 +33,6 @@ public class Main {
                     System.out.println("b - book a Desk");
                     System.out.println("c - cancel booking");
                     char choice = scanner.nextLine().charAt(0);
-
                     if (choice == 'b') {
                         bookDesk();
                     } else if (choice == 'c') {
@@ -46,10 +44,10 @@ public class Main {
                     System.out.println("Any other action? y/n");
                     runAgain = scanner.nextLine().charAt(0);
                 }
-                } else if (currentUserId > 0 && currentUserRole.equals("m")) {
+            } else if (currentUserId > 0 && currentUserRole.equals("m")) {
                     while (runAgain == 'y') {
                     System.out.println("What would you like to do?");
-                    System.out.println("l 0- list free Desks");
+                    System.out.println("l - list free Desks");
                     System.out.println("n - list occupied Desks");
                     System.out.println("a - add a Desk");
                     System.out.println("r - remove a Desk");
@@ -69,12 +67,13 @@ public class Main {
                     runAgain = scanner.nextLine().charAt(0);
                 }
 
-            }else
+            }else if (currentUserId <0) {
                 System.out.println("Incorrect user name or password");
                 System.out.println("Try again? y/n");
                 tryAgain = scanner.nextLine().charAt(0);
             }
         }
+    }
 
 
     public static void login() {
@@ -91,6 +90,7 @@ public class Main {
             System.out.println("You have logged in successfully!");
             currentUserId = userId;
         }
+        currentUserRole = dataBase.getUserRole(currentUser.getUserName());
     }
     private static String getMatchedPattern(String inputMessage, String warnMessage, String pattern) {
         String inputValue;

@@ -7,7 +7,7 @@ public class DBConnection {
     String dbPass = "1234";
 
 
-    public int createUserDB(UserRegistration newUser){
+    public int createUserDB(UserRegistration newUser) {
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
             String sql = "INSERT INTO users (userName, password, fullName, userEmail, userRole) VALUES (?,?,?,?,?);";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
@@ -18,7 +18,7 @@ public class DBConnection {
             preparedStatement.setString(5, newUser.getUserRole());
             preparedStatement.executeUpdate();
 
-            String sqlID = "SELECT * FROM users WHERE userName ='" + newUser.getUserName() + "' and password ='" + newUser.getPassword()+ "'";
+            String sqlID = "SELECT * FROM users WHERE userName ='" + newUser.getUserName() + "' and password ='" + newUser.getPassword() + "'";
             Statement statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(sqlID);
 
@@ -31,12 +31,12 @@ public class DBConnection {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-            return  0;
+        return 0;
 
-        }
+    }
 
 
-    public int checkUser(String userName){
+    public int checkUser(String userName) {
 
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
             String sqlUser = "SELECT * FROM users WHERE userName ='" + userName + "'";
@@ -56,10 +56,11 @@ public class DBConnection {
         }
         return 0;
     }
+
     public int checkLogin(String userName, String password) {
 
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
-            String sql = "SELECT * FROM users WHERE userName ='" + userName + "' and password ='" + password+ "'";
+            String sql = "SELECT * FROM users WHERE userName ='" + userName + "' and password ='" + password + "'";
 
             Statement statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -75,6 +76,7 @@ public class DBConnection {
         }
         return 0;
     }
+
     public void readListDesk() {
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
             String listDesk = "SELECT * FROM workplaces WHERE occupied = '0'";
@@ -85,18 +87,18 @@ public class DBConnection {
                 String wplaceID = resultSet.getString(1);
                 int floor = resultSet.getInt(2);
                 int room = resultSet.getInt(3);
-                String listOutput = "Workplace: " + wplaceID +" Floor: "+floor+" Room: "+room;
+                String listOutput = "Workplace: " + wplaceID + " Floor: " + floor + " Room: " + room;
                 System.out.println(listOutput);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     public int getUserID(String Name) {
         int usID = 0;
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
-            String sql = "SELECT userID FROM users WHERE userName = '" +Name + "'";
+            String sql = "SELECT userID FROM users WHERE userName = '" + Name + "'";
 
             Statement statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
@@ -104,12 +106,12 @@ public class DBConnection {
             while (resultSet.next()) {
                 usID = resultSet.getInt(1);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return usID;
     }
+
     public int saveBookingDesk(BookingDesk newBooking) {
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
             String bkDesk = "UPDATE workplaces\tSET occupied = ?, dateFrom = ?, dateTo = ?, userID = ? WHERE wplaceID = ?";
@@ -123,18 +125,18 @@ public class DBConnection {
 
 
             int rowsInserted = statement.executeUpdate();
-            if(rowsInserted > 0){
+            if (rowsInserted > 0) {
                 System.out.println("Congratulations! Your booking is confirmed");
             } else {
                 System.out.println("Ups! Try again...Please check spelling");
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return 1;
         }
         return 0;
     }
+
     public int delBookingDesk(BookingDesk delBooking) {
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
             String bkDesk = "UPDATE workplaces\tSET occupied = ?, dateFrom = ?, dateTo = ?, userID = ? WHERE wplaceID = ?";
@@ -148,19 +150,32 @@ public class DBConnection {
 
 
             int rowsInserted = statement.executeUpdate();
-            if(rowsInserted > 0){
+            if (rowsInserted > 0) {
                 System.out.println("Your booking is cancelled");
             } else {
                 System.out.println("Ups! Try again...Please check Workplace ID");
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             return 1;
         }
         return 0;
     }
 
+    public String getUserRole(String Name) {
+        String usRole = "";
+        try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
+            String sql = "SELECT userRole FROM users WHERE userName = '" + Name + "'";
 
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
 
+            while (resultSet.next()) {
+                usRole = resultSet.getString(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return usRole;
+    }
 }
