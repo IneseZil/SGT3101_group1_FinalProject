@@ -7,6 +7,15 @@ public class DBConnection {
     String dbPass = "1234";
 
 
+
+    /*public int createUserDB(){
+        try () {
+
+        } catch {
+
+        }
+    }*/
+
     public int createUser(String userName, String password, String fullName, String userEmail, String userRole){
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
 
@@ -93,7 +102,22 @@ public class DBConnection {
         }
         return 0;
     }
+    public int getUserName(int userID) {
+        int ID=0;
+        try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
+            String sql = "SELECT userID FROM users WHERE userName = " +userID;
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
 
+            while (resultSet.next()) {
+                ID = resultSet.getInt(1);
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ID;
+    }
     public int saveBookingDesk(BookingDesk newBooking) {
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
             String bkDesk = "UPDATE workplaces\tSET occupied = ?, dateFrom = ?, dateTo = ?, userID = ? WHERE wplaceID = ?";

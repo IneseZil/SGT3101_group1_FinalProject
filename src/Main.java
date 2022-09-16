@@ -9,6 +9,7 @@ public class Main {
     static char runAgain = 'y';
     static DBConnection dataBase = new DBConnection();
     static Scanner scanner = new Scanner(System.in);
+    static UserRegistration currentUser = new UserRegistration();
 
     public static void main(String[] args) {
         char tryAgain = 'y';
@@ -53,7 +54,7 @@ public class Main {
     }
 
     public static void login() {
-        UserRegistration currentUser = new UserRegistration();
+        //UserRegistration currentUser = new UserRegistration();
 
         System.out.println("Enter username");
         currentUser.setUserName(scanner.nextLine());
@@ -67,99 +68,6 @@ public class Main {
             System.out.println("You have logged in successfully!");
             currentUserId = userId;
         }
-    }
-
-    public static void createUser() {
-        UserRegistration newUser = new UserRegistration();
-        System.out.println("Enter username");
-        newUser.setUserName(scanner.nextLine());
-
-        //to create a method that we can use for others as well
-        Pattern pattern = Pattern.compile("^[a-zA-Z\\d]{3,20}$");
-        Matcher matcher = pattern.matcher(newUser.getUserName());
-        while (!matcher.matches()) {
-            System.out.println("Please enter a valid username! It should be at least 3 characters!");
-            newUser.setUserName(scanner.nextLine());
-            pattern = Pattern.compile("^[a-zA-Z\\d]{3,20}$");
-            matcher = pattern.matcher(newUser.getUserName());
-        }
-
-        //DataBase class method for username check returns 1 if true, 0 if false
-        int userId = dataBase.checkUser(newUser.getUserName());
-
-        while (userId > 0) {
-            System.out.println("Username already exists! Try another one!");
-            newUser.setUserName(scanner.nextLine());
-            pattern = Pattern.compile("^[a-zA-Z\\d+_.!-]]{3,20}$");
-            matcher = pattern.matcher(newUser.getUserName());
-            while (!matcher.matches()) {
-
-                System.out.println("Please enter a valid username! It should be at least 3 characters!");
-                newUser.setUserName(scanner.nextLine());
-                pattern = Pattern.compile("^[a-zA-Z\\d+_.!-]]{3,20}$");
-                matcher = pattern.matcher(newUser.getUserName());
-            }
-            userId = dataBase.checkUser(newUser.getUserName());
-
-        }
-
-        System.out.println("Enter password");
-        newUser.setPassword(scanner.nextLine());
-
-        pattern = Pattern.compile("^[a-zA-Z\\d+_.!-]{3,20}$");
-        matcher = pattern.matcher(newUser.getPassword());
-        while (!matcher.matches()) {
-            System.out.println("Please enter a valid password! It should be at least 3 characters!");
-            newUser.setPassword(scanner.nextLine());
-            pattern = Pattern.compile("^[a-zA-Z\\d+_.!-]{3,20}$");
-            matcher = pattern.matcher(newUser.getPassword());
-        }
-
-        System.out.println("Enter full name");
-        newUser.setFullName(scanner.nextLine());
-
-        pattern = Pattern.compile("^([A-Za-z]*((\\s)))+[A-Za-z]*$");
-        matcher = pattern.matcher(newUser.getFullName());
-        while (!matcher.matches()) {
-            System.out.println("Please enter valid first name and last name!");
-            newUser.setFullName(scanner.nextLine());
-            pattern = Pattern.compile("^([A-Za-z]*((\\s)))+[A-Za-z]*$");
-            matcher = pattern.matcher(newUser.getFullName());
-        }
-
-        System.out.println("Enter email");
-        newUser.setUserEmail(scanner.nextLine());
-        pattern = Pattern.compile("^[A-Za-z\\d+_.-]+@(.+)$");
-        matcher = pattern.matcher(newUser.getUserEmail());
-        while (!matcher.matches()) {
-            System.out.println("Please enter valid e-mail!");
-            System.out.println("Enter email");
-            newUser.setUserEmail(scanner.nextLine());
-            pattern = Pattern.compile("^[A-Za-z\\d+_.-]+@(.+)$");
-            matcher = pattern.matcher(newUser.getUserEmail());
-        }
-        System.out.println("What is your role: m - manager | e - employee");
-        newUser.setUserRole(scanner.nextLine());
-        pattern = Pattern.compile("[me]", Pattern.CASE_INSENSITIVE);
-        matcher = pattern.matcher(newUser.getUserRole());
-        while (!matcher.matches()) {
-            System.out.println("Please make a valid choice");
-            System.out.println("What is your role: m - manager | e - employee");
-            newUser.setUserRole(scanner.nextLine());
-            pattern = Pattern.compile("[me]", Pattern.CASE_INSENSITIVE);
-            matcher = pattern.matcher(newUser.getUserRole());
-        }
-
-        //CurrentUserID returns new userID Nr.
-        currentUserId = dataBase.createUser(newUser.getUserName(), newUser.getPassword(), newUser.getFullName(), newUser.getUserEmail(), newUser.getUserRole());
-
-        if (currentUserId > 0) {
-            System.out.println("You have created an account successfully!");
-        }
-    }
-
-    public static void listDesk () {
-        dataBase.readListDesk();
     }
 
     private static String getMatchedPattern(String inputMessage, String warnMessage, String pattern) {
@@ -179,18 +87,52 @@ public class Main {
         }
         return inputValue;
     }
+
+    public static void createUser() {
+        UserRegistration newUser = new UserRegistration();
+
+        newUser.setUserName(getMatchedPattern("Enter username", "Please enter a valid username! It should be at least 3 characters!","^[a-zA-Z\\d]{3,20}$"  ));
+
+        //DataBase class method for username check returns 1 if true, 0 if false
+        int userId = dataBase.checkUser(newUser.getUserName());
+        while (userId > 0) {
+            newUser.setUserName(getMatchedPattern("Username already exists! Try another one!","Please enter a valid username! It should be at least 3 characters!","^[a-zA-Z\\d+_.!-]]{3,20}$"));
+            userId = dataBase.checkUser(newUser.getUserName());
+        }
+
+        newUser.setPassword(getMatchedPattern("Enter password","Please enter a valid password! It should be at least 3 characters!","^[a-zA-Z\\d+_.!-]{3,20}$"));
+
+        newUser.setFullName(getMatchedPattern("Enter full name","Please enter valid first name and last name!","^([A-Za-z]*((\\s)))+[A-Za-z]*$" ));
+
+        newUser.setUserEmail(getMatchedPattern("Enter email", "Please enter valid e-mail!","^[A-Za-z\\d+_.-]+@(.+)$"));
+
+        newUser.setUserRole(getMatchedPattern("What is your role: m - manager | e - employee","Please make a valid choice","[me]"));
+
+        //CurrentUserID returns new userID Nr.
+        currentUserId = dataBase.createUser(newUser.getUserName(), newUser.getPassword(), newUser.getFullName(), newUser.getUserEmail(), newUser.getUserRole());
+
+        if (currentUserId > 0) {
+            System.out.println("You have created an account successfully!");
+        }
+    }
+
+    public static void listDesk () {
+        dataBase.readListDesk();
+    }
     public static void bookDesk () {
         BookingDesk newBooking = new BookingDesk();
 
         newBooking.setWplaceID(getMatchedPattern("Please enter Workplace ID","Please check Workplace ID! It should be 6 digits","\\d{6}"));
 
-        newBooking.setOccupied("Y");
+        newBooking.setOccupied("1");
 
         newBooking.setDateFrom(getMatchedPattern("Please enter Date From: YYYYMMDD", "Please check DateFrom! It should be in YYYYMMDD format", "\\d{8}"));
 
         newBooking.setDateTo(getMatchedPattern("Please enter Date To: YYYYMMDD", "Please check DateTo! It should be in YYYYMMDD format","\\d{8}"));
 
-        newBooking.setUserID(7); //(dataBase.checkUser(UserRegistration.getUserID()));  //TO TEST CAREFULLY!!!
+        //currentUserId = dataBase.createUser(newBooking.getUserID());
+        newBooking.setUserID(dataBase.getUserName(currentUser.getUserID()));  //CURRENT USER TO TEST CAREFULLY!!!
+
         dataBase.saveBookingDesk(newBooking);
 
         //THANK YOU MESSAGE
