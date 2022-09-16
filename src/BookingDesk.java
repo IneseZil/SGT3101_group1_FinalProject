@@ -4,7 +4,7 @@ public class BookingDesk {
     private String occupied;
     private String dateFrom;
     private String dateTo;
-    private Integer userID;
+    private int userID;
 
     public void setWplaceID(String wplaceID) {
         this.wplaceID = wplaceID;
@@ -18,7 +18,7 @@ public class BookingDesk {
     public void setDateTo(String dateTo) {
         this.dateTo = dateTo;
     }
-    public void setUserID(Integer userID){
+    public void setUserID(int userID){
         this.userID = userID;
     }
 
@@ -34,7 +34,7 @@ public class BookingDesk {
     public String getDateTo () {
         return dateTo;
     }
-    public Integer getUserID () {
+    public int getUserID () {
         return userID;
     }
 

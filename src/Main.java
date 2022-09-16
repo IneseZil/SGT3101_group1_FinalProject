@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
-    //variable for checking current user
     static public int currentUserId = 0;
     static char runAgain = 'y';
     static DBConnection dataBase = new DBConnection();
@@ -19,13 +18,16 @@ public class Main {
             System.out.println("c - create an account");
             char action = scanner.nextLine().charAt(0);
 
+            String currentUserRole;
+            currentUserRole = currentUser.getUserRole();
+
             if (action == 'l') {
                 login();
             } else if (action == 'c') {
                 createUser();
             }
 
-            if (currentUserId > 0) {
+            if (currentUserId > 0 && currentUserRole.equals("e")) {
                 while (runAgain == 'y') {
                     System.out.println("What would you like to do?");
                     System.out.println("l - list free Desks");
@@ -35,26 +37,47 @@ public class Main {
 
                     if (choice == 'b') {
                         bookDesk();
-                    }/* else if (choice == 'c') {
-                        cancelDesk();
-                    } else
-                    if (choice == 'l') {
+                    } else if (choice == 'c') {
+                        deleteDesk();
+                    } else if (choice == 'l') {
                         listDesk();
-                    }*/
+                    }
 
-                    System.out.println("Do you want to do something more? y/n");
+                    System.out.println("Any other action? y/n");
                     runAgain = scanner.nextLine().charAt(0);
                 }
-            } else {
+                } else if (currentUserId > 0 && currentUserRole.equals("m")) {
+                    while (runAgain == 'y') {
+                    System.out.println("What would you like to do?");
+                    System.out.println("l 0- list free Desks");
+                    System.out.println("n - list occupied Desks");
+                    System.out.println("a - add a Desk");
+                    System.out.println("r - remove a Desk");
+                    char choice = scanner.nextLine().charAt(0);
+
+                   /* if (choice == 'l') {
+                        listDesk();
+                    } else if (choice == 'n') {
+                        listOccDesk();
+                    } else if (choice == 'a') {
+                        addDesk();
+                    } else if (choice == 'r') {
+                        removeDesk();
+                    }*/
+
+                    System.out.println("Any other action? y/n");
+                    runAgain = scanner.nextLine().charAt(0);
+                }
+
+            }else
                 System.out.println("Incorrect user name or password");
                 System.out.println("Try again? y/n");
-                tryAgain = scanner.nextLine().charAt(0); //FIX no input possible
+                tryAgain = scanner.nextLine().charAt(0);
             }
         }
-    }
+
 
     public static void login() {
-        //UserRegistration currentUser = new UserRegistration();
 
         System.out.println("Enter username");
         currentUser.setUserName(scanner.nextLine());
@@ -69,7 +92,6 @@ public class Main {
             currentUserId = userId;
         }
     }
-
     private static String getMatchedPattern(String inputMessage, String warnMessage, String pattern) {
         String inputValue;
         System.out.println(inputMessage);
@@ -87,7 +109,6 @@ public class Main {
         }
         return inputValue;
     }
-
     public static void createUser() {
         UserRegistration newUser = new UserRegistration();
 
@@ -109,13 +130,12 @@ public class Main {
         newUser.setUserRole(getMatchedPattern("What is your role: m - manager | e - employee","Please make a valid choice","[me]"));
 
         //CurrentUserID returns new userID Nr.
-        currentUserId = dataBase.createUser(newUser.getUserName(), newUser.getPassword(), newUser.getFullName(), newUser.getUserEmail(), newUser.getUserRole());
+        currentUserId = dataBase.createUserDB(newUser);
 
         if (currentUserId > 0) {
             System.out.println("You have created an account successfully!");
         }
     }
-
     public static void listDesk () {
         dataBase.readListDesk();
     }
@@ -130,12 +150,24 @@ public class Main {
 
         newBooking.setDateTo(getMatchedPattern("Please enter Date To: YYYYMMDD", "Please check DateTo! It should be in YYYYMMDD format","\\d{8}"));
 
-        //currentUserId = dataBase.createUser(newBooking.getUserID());
-        newBooking.setUserID(dataBase.getUserName(currentUser.getUserID()));  //CURRENT USER TO TEST CAREFULLY!!!
+        newBooking.setUserID(dataBase.getUserID(currentUser.getUserName()));
 
         dataBase.saveBookingDesk(newBooking);
+    }
+    public static void deleteDesk () {
+        BookingDesk delBooking = new BookingDesk();
 
-        //THANK YOU MESSAGE
+        delBooking.setWplaceID(getMatchedPattern("Please enter Workplace ID","Please check Workplace ID! It should be 6 digits","\\d{6}"));
+
+        delBooking.setOccupied("0");
+
+        delBooking.setDateFrom(null);
+
+        delBooking.setDateTo(null);
+
+        delBooking.setUserID(dataBase.getUserID(currentUser.getUserName()));  //CURRENT USER TO TEST CAREFULLY!!!
+
+        dataBase.delBookingDesk(delBooking);
     }
 
 }
