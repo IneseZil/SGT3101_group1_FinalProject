@@ -3,6 +3,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.lang.Integer.parseInt;
+
 public class Main {
     static public int currentUserId = 0;
     static public String currentUserRole;
@@ -10,6 +12,7 @@ public class Main {
     static DBConnection dataBase = new DBConnection();
     static Scanner scanner = new Scanner(System.in);
     static UserRegistration currentUser = new UserRegistration();
+    static BookingDesk newBooking = new BookingDesk();
 
     public static void main(String[] args) {
         char tryAgain = 'y';
@@ -36,7 +39,7 @@ public class Main {
                     if (choice == 'b') {
                         bookDesk();
                     } else if (choice == 'c') {
-                        deleteDesk();
+                        deleteBooking();
                     } else if (choice == 'l') {
                         listDesk();
                     }
@@ -52,8 +55,7 @@ public class Main {
                     System.out.println("a - add a Desk");
                     System.out.println("r - remove a Desk");
                     char choice = scanner.nextLine().charAt(0);
-
-                   /* if (choice == 'l') {
+                    if (choice == 'l') {
                         listDesk();
                     } else if (choice == 'n') {
                         listOccDesk();
@@ -61,17 +63,17 @@ public class Main {
                         addDesk();
                     } else if (choice == 'r') {
                         removeDesk();
-                    }*/
+                    }
 
                     System.out.println("Any other action? y/n");
                     runAgain = scanner.nextLine().charAt(0);
                 }
 
-            }else if (currentUserId <0) {
+            }else /*if (currentUserId <0) {*/
                 System.out.println("Incorrect user name or password");
                 System.out.println("Try again? y/n");
                 tryAgain = scanner.nextLine().charAt(0);
-            }
+            //}
         }
     }
 
@@ -140,7 +142,7 @@ public class Main {
         dataBase.readListDesk();
     }
     public static void bookDesk () {
-        BookingDesk newBooking = new BookingDesk();
+        //BookingDesk newBooking = new BookingDesk();
 
         newBooking.setWplaceID(getMatchedPattern("Please enter Workplace ID","Please check Workplace ID! It should be 6 digits","\\d{6}"));
 
@@ -154,7 +156,7 @@ public class Main {
 
         dataBase.saveBookingDesk(newBooking);
     }
-    public static void deleteDesk () {
+    public static void deleteBooking () { //MVP2 - add validation of userID vs. WorkplaceID
         BookingDesk delBooking = new BookingDesk();
 
         delBooking.setWplaceID(getMatchedPattern("Please enter Workplace ID","Please check Workplace ID! It should be 6 digits","\\d{6}"));
@@ -169,5 +171,33 @@ public class Main {
 
         dataBase.delBookingDesk(delBooking);
     }
+    public static void listOccDesk () {
+        dataBase.readListOccDesk();
+    }
+    public static String addDesk() {
+        AddingDesk newDesk = new AddingDesk();
+
+        newDesk.setFloor(parseInt(getMatchedPattern("Please add floor nr.", "Please check floor number! It should be 1 digit", "\\d{1}")));
+
+        newDesk.setRoom(parseInt(getMatchedPattern("Please enter room nr.", "Please check room number! It should be max 2 digits", "\\d{1,2}")));
+
+        newDesk.setDeskID(parseInt(getMatchedPattern("Please add DeskID", "Please check DeskID! It should be max 3 digits", "\\d{1,2,3}")));
+
+        newDesk.setWplaceID("" + AddingDesk.getFloor() + AddingDesk.getRoom() + AddingDesk.getDeskID());
+
+        newDesk.setOccupied("0");
+
+        dataBase.saveAddingDesk(newDesk);
+        return "";
+
+    }
+    public static void removeDesk () {
+        AddingDesk delDesk = new AddingDesk();
+
+        delDesk.setWplaceID(getMatchedPattern("Please enter Workplace ID","Please check Workplace ID! It should be 6 digits","\\d{6}"));
+
+        dataBase.delWorkplace(delDesk);
+    }
+
 
 }
