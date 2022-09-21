@@ -21,7 +21,6 @@ public class BookingDesk {
     public void setUserID(int userID){
         this.userID = userID;
     }
-
     public String getWplaceID () {
         return wplaceID;
     }

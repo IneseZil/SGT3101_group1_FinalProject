@@ -6,7 +6,6 @@ public class DBConnection {
     static String dbUser = "root";
     static String dbPass = "1234";
 
-
     public int createUserDB(UserRegistration newUser) {
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
             String sql = "INSERT INTO users (userName, password, fullName, userEmail, userRole) VALUES (?,?,?,?,?);";
@@ -34,8 +33,6 @@ public class DBConnection {
         return 0;
 
     }
-
-
     public int checkUser(String userName) {
 
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
@@ -56,7 +53,6 @@ public class DBConnection {
         }
         return 0;
     }
-
     public int checkLogin(String userName, String password) {
 
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
@@ -76,7 +72,6 @@ public class DBConnection {
         }
         return 0;
     }
-
     public void readListDesk() {
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
             String listDesk = "SELECT * FROM workplaces WHERE occupied = '0'";
@@ -94,7 +89,6 @@ public class DBConnection {
             e.printStackTrace();
         }
     }
-
     public int getUserID(String Name) {
         int usID = 0;
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
@@ -111,7 +105,6 @@ public class DBConnection {
         }
         return usID;
     }
-
     public int saveBookingDesk(BookingDesk newBooking) {
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
             String bkDesk = "UPDATE workplaces\tSET occupied = ?, dateFrom = ?, dateTo = ?, userID = ? WHERE wplaceID = ?";
@@ -136,7 +129,6 @@ public class DBConnection {
         }
         return 0;
     }
-
     public int delBookingDesk(BookingDesk delBooking) {
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
             String bkDesk = "UPDATE workplaces\tSET occupied = ?, dateFrom = ?, dateTo = ?, userID = ? WHERE wplaceID = ?";
@@ -161,7 +153,6 @@ public class DBConnection {
         }
         return 0;
     }
-
     public String getUserRole(String Name) {
         String usRole = "";
         try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {

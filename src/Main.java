@@ -29,6 +29,8 @@ public class Main {
                 createUser();
             }
 
+
+
             if (currentUserId > 0 && currentUserRole.equals("e")) {
                 while (runAgain == 'y') {
                     System.out.println("What would you like to do?");
@@ -69,14 +71,13 @@ public class Main {
                     runAgain = scanner.nextLine().charAt(0);
                 }
 
-            }else /*if (currentUserId <0) {*/
+            }else if (currentUserId <0) {
                 System.out.println("Incorrect user name or password");
                 System.out.println("Try again? y/n");
                 tryAgain = scanner.nextLine().charAt(0);
-            //}
+            }
         }
     }
-
 
     public static void login() {
 
@@ -91,8 +92,7 @@ public class Main {
         if (userId > 0) {
             System.out.println("You have logged in successfully!");
             currentUserId = userId;
-        }
-        currentUserRole = dataBase.getUserRole(currentUser.getUserName());
+        }currentUserRole = dataBase.getUserRole(currentUser.getUserName());
     }
     private static String getMatchedPattern(String inputMessage, String warnMessage, String pattern) {
         String inputValue;
