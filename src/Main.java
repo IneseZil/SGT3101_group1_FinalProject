@@ -136,7 +136,7 @@ public class Main {
 
         if (currentUserId > 0) {
             System.out.println("You have created an account successfully!");
-        }
+        } currentUserRole = dataBase.getUserRole(currentUser.getUserName());
     }
     public static void listDesk () {
         dataBase.readListDesk();
@@ -181,7 +181,7 @@ public class Main {
 
         newDesk.setRoom(parseInt(getMatchedPattern("Please enter room nr.", "Please check room number! It should be max 2 digits", "\\d{1,2}")));
 
-        newDesk.setDeskID(parseInt(getMatchedPattern("Please add DeskID", "Please check DeskID! It should be max 3 digits", "\\d{1,2,3}")));
+        newDesk.setDeskID(parseInt(getMatchedPattern("Please add DeskID", "Please check DeskID! It should be max 3 digits", "\\d{3}")));
 
         newDesk.setWplaceID("" + AddingDesk.getFloor() + AddingDesk.getRoom() + AddingDesk.getDeskID());
 
